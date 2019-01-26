@@ -5,7 +5,7 @@ export default class Saved extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text> textInComponent </Text>
+        <Text> Saved </Text>
       </View>
     )
   }

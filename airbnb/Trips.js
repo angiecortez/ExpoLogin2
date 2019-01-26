@@ -5,7 +5,7 @@ export default class Trips extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text> textInComponent </Text>
+        <Text> ADD </Text>
       </View>
     )
   }

@@ -5,7 +5,7 @@ export default class Inbox extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text> textInComponent </Text>
+        <Text> Inbox </Text>
       </View>
     )
   }

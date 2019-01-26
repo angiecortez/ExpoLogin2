@@ -1,3 +1,4 @@
+import axios from 'axios'
 const baseApi = 'https://utec.api.uma.la/api/v1/';
 const Authorization = {
 	method: 'get',
@@ -17,7 +18,7 @@ export const loginRequest = (data) => axios.post(baseUrl + '/auth/login', { ...d
 
 /// GET EVENTS
 export const getEvents = () => {
-	return fetch(baseApi + 'events', Authorization);
+	return axios.get(baseApi + 'events', Authorization);
 };
 export const getEvent = (id) => {
 	return fetch(baseApi + 'events/' + `${id}`, Authorization);

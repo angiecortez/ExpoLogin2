@@ -17,7 +17,6 @@ class SignInScreen extends React.Component {
             id_token: '',
             name: ''
         },
-        idToken: ''
     }
     signIn = async () => {
         try {
