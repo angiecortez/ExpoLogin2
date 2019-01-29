@@ -18,7 +18,7 @@ const Category = props => (
         borderColor: "#dddddd",
         borderRadius: 10,
         overflow: "hidden",
-        marginTop: 20
+        marginTop: props.marginTop
       }}
     >
       <ImageBackground
