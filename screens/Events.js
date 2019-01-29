@@ -36,19 +36,14 @@
 import React, { Component } from "react";
 import {
   View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  TextInput,
   Platform,
   StatusBar,
-  WebView,
   FlatList,
   ActivityIndicator,
-  Image
 } from "react-native";
 import axios from "axios";
-import HTMLView from 'react-native-htmlview';
+import HTMLView from "react-native-htmlview";
+import Category from "./components/Category";
 const Authorization = {
   method: "get",
   headers: {
@@ -61,6 +56,9 @@ const Authorization = {
 const baseApi = "https://utec.api.uma.la/api/v1/";
 
 class Explore extends Component {
+  static navigationOptions = {
+    title: "Welcome to the app!"
+  };
   state = {
     events: [],
     isLoading: true
@@ -76,12 +74,10 @@ class Explore extends Component {
     try {
       const response = await axios.get(baseApi + "events", Authorization);
       this.setState({ events: response.data.events, isLoading: false });
-      console.log(this.state);
     } catch (error) {
       alert(error);
     }
   };
-
   render() {
     if (this.state.isLoading)
       return (
@@ -95,36 +91,20 @@ class Explore extends Component {
           flex: 1,
           backgroundColor: "#fff",
           alignItems: "center",
-          justifyContent: "center",
-          paddingTop: 50
+          justifyContent: "center"
         }}
       >
         <FlatList
           horizontal={true}
           data={this.state.events}
           renderItem={({ item }) => (
-            <View
-              style={{
-                height: 230,
-                width: 180,
-                marginLeft: 20,
-                borderWidth: 0.5,
-                borderColor: "#dddddd",
-                borderRadius: 10
-              }}
-            >
-              <Image
-                style={{ width: "100%", height: 100 }}
-                source={{
-                  uri:
-                    "https://facebook.github.io/react-native/docs/assets/favicon.png"
-                }}
+          
+              <Category 
+                imageUri={require("../assets/home.jpeg")}
+                name={item.title}
+                // onItemPressed={() => this.itemSelectedHandler(item.id)}
               />
-              <HTMLView 
-              value={item.small_description}
-              stylesheet={styles.a}
-              />
-            </View>
+      
           )}
           keyExtractor={({ id }, index) => id}
         />
@@ -134,15 +114,3 @@ class Explore extends Component {
 }
 export default Explore;
 
-const styles = StyleSheet.create({
-  a: {
-    marginTop: 10,
-    fontWeight: '300',
-    color: '#FF3366', // make links coloured pink
-    height: 120
-  },
-  contenContainer: {
-    height: "100%",
-    width: "100%"
-  }
-});
