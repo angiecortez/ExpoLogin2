@@ -1,11 +1,4 @@
-// import React from "react";
-// import {AsyncStorage, View, Button, StyleSheet} from "react-native";
-
 // class HomeScreen extends React.Component {
-//     static navigationOptions = {
-//         title: 'Welcome to the app!',
-//     };
-
 //     render() {
 //         return (
 //             <View style={styles.container}>
@@ -14,11 +7,9 @@
 //             </View>
 //         );
 //     }
-
 //     _showMoreApp = () => {
 //         this.props.navigation.navigate('Other');
 //     };
-
 //     _signOutAsync = async () => {
 //         await AsyncStorage.clear();
 //         this.props.navigation.navigate('Auth');
@@ -40,24 +31,18 @@ import {
   StatusBar,
   FlatList,
   ActivityIndicator,
+  Text
 } from "react-native";
 import axios from "axios";
 import HTMLView from "react-native-htmlview";
-import Category from "./components/Category";
-const Authorization = {
-  method: "get",
-  headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    Authorization:
-      "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjkwMThhM2VlMWJkOWZhMTY3ZTc2ODY2ZmQ1ZjlkMmUzMTc2NjA2YjkxMDhhMmNmYzU1YzJlYzkxYTU5ZjRkYzVhMWIwMGRhMDg5YTVhZTY5In0.eyJhdWQiOiIxIiwianRpIjoiOTAxOGEzZWUxYmQ5ZmExNjdlNzY4NjZmZDVmOWQyZTMxNzY2MDZiOTEwOGEyY2ZjNTVjMmVjOTFhNTlmNGRjNWExYjAwZGEwODlhNWFlNjkiLCJpYXQiOjE1NDQ1NjQ2NTcsIm5iZiI6MTU0NDU2NDY1NywiZXhwIjoxNTc2MTAwNjU2LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.Pf85GC9pmByyK5nsrtTPbjk7ViZRnKG-W04EJ4vbwesjrmFjqpNErvVH5eRNYk02YG2YRhJzPHDaTo2gDEdRw99zVsL3D9AjqHBY6yNoP-c0qe3t7wqS1i0_l49yJrt_hZCgUrzFQRi8q16PsYW3obWQipgjXgnIjZ5EM_-Ri_HyYLeNd5pZkbXkLIX8748NCa-XS-rY2F27U-Z-QsyVkaUD03eOxWhIeu0GkZzQDcE_VEIX4pryN0vm23-Jida3DScgKjPSCpHnvK43oPy9n-VoNThiVtZvnYQRmQT93CFV-cjZgOVzIEDcdNzT2Vh3a-1to7pbyh0Hx1Cfv8K8PU-h-smIKLyypHO6AbHOJpwMSjkPmLP5hEHnT5GGMq1zodLnZzTRCs0jMGtLFZuXMGf-YHVgbhT5BjwR_edOjPn-7zE5Aw9a5hOJ2TXB_HWDspbeiZiSMaDd1Q59kx0MhM6utlPba8IRuQseNev4H35bbu4fMsOxaIBDUqByVtbThBoCaZ87V9OJ6PLlZaZC4TaTW9Dy6cfWYjnaDV9jEz4lHPNg3jQCVfaod98ay0A1UbEIlwc2w__XCunCtHF8ypbtzOKlaWgHwHCoA2pc_-dbrqQIjnauZUkjfxdUFGZ71Jn_172Uhf7Cd1K-_zi1EQJHpO3-lB6etIU58TOk0sU"
-  }
-};
+import Category from "./components/CategoryEvent";
+import { getEvent } from '../api/post/index';
 const baseApi = "https://utec.api.uma.la/api/v1/";
 
+import { Authorization } from '../api/post/index';
 class Explore extends Component {
   static navigationOptions = {
-    title: "Welcome to the app!"
+    title: "Eventos"
   };
   state = {
     events: [],
@@ -70,47 +55,104 @@ class Explore extends Component {
     }
     this.getEvents();
   }
+  getIndividualData = async (query) => {
+    let data = await getEvent(query)
+    console.log(data)
+    this.props.navigation.navigate({ routeName:'Event', params:{data: data}})
+  }
   getEvents = async () => {
     try {
-      const response = await axios.get(baseApi + "events", Authorization);
+      let d = new Date();
+      let date = `${d}.getFullYear().toString()-(${d}.getMonth() + 1)-${d}.getDate().toString() ${d}.getHours().toString():${d}.getMinutes()`;
+
+      const response = await axios.get(
+        baseApi +
+          "events" +
+          "?filter_groups[0][filters][0][key]=finish" +
+          "&filter_groups[0][filters][0][value]=" +
+          date +
+          "&filter_groups[0][filters][0][operator]=lt" +
+          "&includes[]=media" +
+          "&sort[0][key]=finish" +
+          "&sort[0][direction]=DESC",
+        Authorization
+      );
+
       this.setState({ events: response.data.events, isLoading: false });
     } catch (error) {
       alert(error);
     }
   };
   render() {
-    if (this.state.isLoading)
+    const { navigation } = this.props;
+    const { events, isLoading } = this.state;
+    if (isLoading)
       return (
         <View style={{ flex: 1, padding: 20 }}>
           <ActivityIndicator />
         </View>
       );
+
     return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: "#fff",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        <FlatList
-          horizontal={true}
-          data={this.state.events}
-          renderItem={({ item }) => (
-          
-              <Category 
-                imageUri={require("../assets/home.jpeg")}
+      <View style={{ backgroundColor: "#ffffff" }}>
+        <View>
+          <Text style={{ paddingLeft: 30, paddingBottom: 20 }}>
+            Eventos Recomendados
+          </Text>
+          <FlatList
+            showsHorizontalScrollIndicator={false}
+            horizontal={true}
+            data={events}
+            renderItem={({ item }) => (
+              <Category
+                id={item.id}
+                getEventIndidividual={this.getIndividualData}
+                navigation={navigation}
+                start={"28 NOV 2019"}
+                time="8.00"
+                width={240}
+                height={210}
+                imageUri={{
+                  uri: `https://media.uma.la/utec/${
+                    item.media[1].id
+                  }/conversions/thumb.jpg`
+                }}
                 name={item.title}
                 // onItemPressed={() => this.itemSelectedHandler(item.id)}
               />
-      
-          )}
-          keyExtractor={({ id }, index) => id}
-        />
+            )}
+            keyExtractor={(item) => item.id}
+          />
+        </View>
+        <View style={{ alignItems: "center" }}>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={this.state.events}
+            renderItem={({ item }) => (
+              <Category
+                id={item.id}
+                getEventIndidividual={this.getIndividualData}
+                navigation={navigation}
+                width={240}
+                height={210}
+                start={"28 NOV 2019"}
+                time="8.00"
+                marginTop={20}
+                imageUri={{
+                  uri: `https://media.uma.la/utec/${
+                    item.media[0].id
+                  }/conversions/thumb.jpg`
+                }}
+                name={item.title}
+                // onItemPressed={() => this.itemSelectedHandler(item.id)}
+              />
+            )}
+            keyExtractor={({ id }, index) => id}
+          />
+        </View>
       </View>
     );
   }
 }
-export default Explore;
 
+export default Explore;

@@ -9,46 +9,53 @@ import {
 
 const Category = props => (
   <TouchableOpacity>
-    <View
+  <View style={{shadowRadius: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.2}}>
+  <View
       style={{
-        height: 180,
-        width: 210,
+        height: props.height,
+        width: props.width,
         marginLeft: 15,
-        borderWidth: 0.5,
         borderColor: "#dddddd",
         borderRadius: 10,
         overflow: "hidden",
-        marginTop: props.marginTop
+        marginTop: props.marginTop,
+    
       }}
     >
-      <ImageBackground
+ 
+ <ImageBackground
         source={props.imageUri}
         style={{
           flex: 1,
           height: null,
           width: null,
           resizeMode: "cover",
-          opacity: 0.7,
-        
+          shadowRadius: 5,
+          opacity: 0.5
         }}
       >
         <View
           style={{
             flex: 1,
             paddingLeft: 10,
-            paddingTop: 140,
+            paddingTop: 160
             // flexDirection: "row"
           }}
         >
           <Text
             numberOfLines={2}
-            style={{ flex: 1, color: "black", fontWeight: "700" }}
+            style={{ flex: 1, color: "#000000", fontWeight: "bold" }}
           >
             {props.name}
           </Text>
         </View>
       </ImageBackground>
-    </View>
+      </View>
+  </View>
+  
+  
   </TouchableOpacity>
 );
 export default Category;

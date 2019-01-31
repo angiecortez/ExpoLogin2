@@ -5,9 +5,11 @@ import {
   StatusBar,
   FlatList,
   ActivityIndicator,
+  Text
 } from "react-native";
 import axios from "axios";
 import Category from "./components/Category";
+import CategoryVertical from './components/CategoryVertical';
 const Authorization = {
   method: "get",
   headers: {
@@ -21,7 +23,7 @@ const baseApi = "https://utec.api.uma.la/api/v1/";
 
 class Opportunities extends Component {
   static navigationOptions = {
-    title: "Welcome to the app!"
+    title: "Oportunidades!"
   };
   state = {
     opportunities: [],
@@ -36,8 +38,26 @@ class Opportunities extends Component {
   }
   getOpportunities = async () => {
     try {
-      const response = await axios.get(baseApi + "opportunities", Authorization);
-      this.setState({ opportunities: response.data.opportunities, isLoading: false });
+      let d = new Date();
+      let date = `${d}.getFullYear().toString()-(${d}.getMonth() + 1)-${d}.getDate().toString() ${d}.getHours().toString():${d}.getMinutes()`;
+      const response = await axios.get(
+        baseApi +
+          "opportunities" +
+          "?includes[]=user" +
+          "&includes[]=category" +
+          "&includes[]=media" +
+          "&sort[0][key]=deadline" +
+          "&sort[0][direction]=ASC" +
+          "&filter_groups[0][filters][0][key]=deadline" +
+          "&filter_groups[0][filters][0][value]=" +
+          date +
+          "&filter_groups[0][filters][0][operator]=lt",
+        Authorization
+      );
+      this.setState({
+        opportunities: response.data.opportunities,
+        isLoading: false
+      });
     } catch (error) {
       alert(error);
     }
@@ -45,35 +65,54 @@ class Opportunities extends Component {
   render() {
     if (this.state.isLoading)
       return (
-        <View style={{ flex: 1, alignItems: "center",
-        justifyContent: "center"}}>
+        <View style={{ paddingTop: 50, backgroundColor: "#fff" }}>
           <ActivityIndicator />
         </View>
       );
     return (
       <View
-        style={{
-          flex: 1,
-          backgroundColor: "#fff",
-          alignItems: "center",
-          justifyContent: "center",
-          paddingTop: 50
-        }}
-      >
-        <FlatList
-          horizontal={true}
-          data={this.state.opportunities}
-          renderItem={({ item }) => (
-          
+        style={{ backgroundColor: "#fff"}}>
+        <View>
+          <Text style={{ paddingLeft: 30, paddingBottom: 20 }}>
+            Oportunidades
+          </Text>
+          <FlatList
+            showsHorizontalScrollIndicator={false}
+            horizontal={true}
+            data={this.state.opportunities}
+            renderItem={({ item }) => (
               <Category
-                
-                imageUri={require("../assets/opportunities.png")}
+                width={240}
+                height={210}
+                imageUri={{
+                  uri: `https://media.uma.la/utec/${item.media[0].id}/conversions/thumb.jpg`
+                }}
                 name={item.title}
               />
-      
-          )}
-          keyExtractor={({ id }, index) => id}
+            )}
+            keyExtractor={({ id }, index) => id}
+          />
+        </View>
+
+        <View>
+        <FlatList
+           showsVerticalScrollIndicator={false}
+            data={this.state.opportunities}
+            renderItem={({ item }) => (
+              <CategoryVertical
+              date='28 NOV 2018'
+              description={item.title}
+                imageUri={{
+                  uri: `https://media.uma.la/utec/${
+                    item.media[0].id
+                  }/conversions/thumb.jpg`
+                }}
+                placeName={item.title}
+              />
+            )}
+            keyExtractor={({ id }, index) => id}
         />
+        </View>
       </View>
     );
   }

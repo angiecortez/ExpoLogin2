@@ -23,7 +23,7 @@ const baseApi = "https://utec.api.uma.la/api/v1/";
 
 class News extends Component {
   static navigationOptions = {
-    title: "Welcome to the app!"
+    title: "Noticias"
   };
   state = {
     news: [],
@@ -38,7 +38,18 @@ class News extends Component {
   }
   getNews = async () => {
     try {
-      const response = await axios.get(baseApi + "news", Authorization);
+      const response = await axios.get(
+        baseApi +
+          "news" +
+          "?includes[]=user" +
+          "&includes[]=comments" +
+          "&includes[]=category" +
+          "&includes[]=media" +
+          "&includes[]=likes" +
+          "&sort[0][key]=id" +
+          "&sort[0][direction]=DESC",
+        Authorization
+      );
       this.setState({ news: response.data.news, isLoading: false });
     } catch (error) {
       alert(error);
@@ -58,30 +69,29 @@ class News extends Component {
           backgroundColor: "#fff",
           alignItems: "center",
           justifyContent: "center",
-          marginTop: 50,
+          marginTop: 50
         }}
       >
-     <Text>Eventos Proximos</Text>
-      <FlatList
+        <Text>Noticias</Text>
+        <FlatList
           directionalLockEnabled={false}
           showsHorizontalScrollIndicator={false}
           horizontal={true}
           data={this.state.news}
           renderItem={({ item }) => (
-            
             <Category
-           
-              imageUri={require("../assets/news.jpg")}
-              name={item.title}
+            width={240}
+            height={210}
+            imageUri={{uri: `https://media.uma.la/utec/${item.media[0].id}/conversions/thumb.jpg`}}
+            name={item.title}
             />
           )}
           keyExtractor={({ id }, index) => id}
         />
 
-       
-             <Text style={{marginTop: 20}}>Eventos Pasados</Text>
+        {/* <Text style={{marginTop: 20}}>Eventos Pasados</Text> */}
 
-      <FlatList
+        {/* <FlatList
        marginTop= {20}
           directionalLockEnabled={false}
           showsVerticalScrollIndicator={false}
@@ -95,8 +105,7 @@ class News extends Component {
             />
           )}
           keyExtractor={({ id }, index) => id}
-        />
-
+        /> */}
       </View>
     );
   }

@@ -1,6 +1,6 @@
 import axios from 'axios'
 const baseApi = 'https://utec.api.uma.la/api/v1/';
-const Authorization = {
+export const Authorization = {
 	method: 'get',
 	headers: {
 		'Content-Type': 'application/json',
@@ -10,7 +10,6 @@ const Authorization = {
 	}
 };
 /* base url from id*/
-
 const baseUrl = 'https://beta-api.kryptos.com.pe/api/v1/auth/new-account';
 
 export const registerNewUser = (payload) => axios.post(baseUrl + '/auth/register', { ...payload });
@@ -21,7 +20,7 @@ export const getEvents = () => {
 	return axios.get(baseApi + 'events', Authorization);
 };
 export const getEvent = (id) => {
-	return fetch(baseApi + 'events/' + `${id}`, Authorization);
+	return fetch(baseApi + 'events/' + `${id}`+ "&includes[]=media", Authorization);
 };
 
 /// GET OPPORTUNITIES

@@ -1,14 +1,12 @@
 import React, { Component } from "react";
-import {
-  View,
-  Dimensions,
-  ScrollView,
-  ImageBackground,
-  TouchableOpacity
-} from "react-native";
+import { View, Dimensions, ScrollView } from "react-native";
 const { height, width } = Dimensions.get("window");
 
+import HomeCategory from './components/HomeCategory';
 export default class Home extends Component {
+  componentDidMount(){
+    // console.log("oppp",this.props.navigation)
+  }
   state = {
     home: [
       {
@@ -56,6 +54,9 @@ export default class Home extends Component {
       }
     ]
   };
+  static navigationOptions = {
+		  title: 'Home',	
+	};  
   render() {
     return (
       <View
@@ -63,56 +64,16 @@ export default class Home extends Component {
           flex: 1,
           backgroundColor: "#fff",
           alignItems: "center",
-          justifyContent: "center",
-          marginTop: 50
+          justifyContent: "center"
         }}
       >
         <ScrollView showsVerticalScrollIndicator={false}>
-          {this.state.home.map(data => (
-            <Home1 width={width} image={data.image} id={data.id} />
+          {this.state.home.map((data, i) => (
+            <HomeCategory id={data.id} navigation={this.props.navigation} key={i} width={width} image={data.image} id={data.id} />
           ))}
-        </ScrollView>
+        </ScrollView> 
       </View>
     );
   }
 }
-class Home1 extends Component {
-  render() {
-    return (
-      <View
-        style={{
-          width: this.props.width / 1.1,
-          height: this.props.width / 3,
-          borderWidth: 0.5,
-          borderColor: "#dddddd",
-          marginTop: 15,
-          borderRadius: 10,
-          overflow: "hidden"
-        }}
-      >
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate(this.props.id)}
-        >
-          <View
-            style={{
-              width: this.props.width / 1.1,
-              height: this.props.width / 3,
-              borderWidth: 0.5,
-              borderColor: "#dddddd"
-            }}
-          >
-            <ImageBackground
-              source={{ uri: this.props.image }}
-              style={{
-                flex: 1,
-                resizeMode: "cover",
-                alignItems: "center",
-                justifyContent: "center"
-              }}
-            />
-          </View>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-}
+

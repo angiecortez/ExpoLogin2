@@ -10,9 +10,9 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo-small.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/logo-small.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -23,7 +23,10 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.yourcompany.uma"
+    },
+    "android": {
+      "package": "com.yourcompany.uma"
     }
   }
 }
